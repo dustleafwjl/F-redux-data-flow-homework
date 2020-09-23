@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { menuOptions } from '../utils';
 import './Menu.scss';
 
@@ -11,15 +12,22 @@ class Menu extends Component {
           <li className="nav-item">
             <Link to="/">首页</Link>
           </li>
-          {menuOptions.map(({ name, path }) => (
-            <li className="nav-item" key={name}>
-              <Link to={path}>{name}</Link>
-            </li>
-          ))}
+          {this.props.userInfo.logged &&
+            menuOptions.map(
+              ({ name, path, permissionCode }) =>
+                this.props.userInfo.permissions.includes(permissionCode) && (
+                  <li className="nav-item" key={name}>
+                    <Link to={path}>{name}</Link>
+                  </li>
+                )
+            )}
         </ul>
       </nav>
     );
   }
 }
+const mapStateToProps = ({ userInfo }) => ({
+  userInfo
+});
 
-export default Menu;
+export default connect(mapStateToProps)(Menu);
